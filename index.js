@@ -1,5 +1,4 @@
 import express from "express";
-import cors from "cors";
 import dotenv from "dotenv";
 import dns from "node:dns/promises";
 import { connectDB } from "./Utils/DB.js";
@@ -26,21 +25,20 @@ io.on("connection", (socket) => {
     console.log("User connected", socket.id);
     socket.on("join", (roomId)=>{
         socket.join(roomId);
-    })
-});
+    });
 
-socket.on("leave", (roomId)=>{
-    socket.leave(roomId);
-});
+    socket.on("leave", (roomId)=>{
+        socket.leave(roomId);
+    });
 
-// Broadcast to Room:
-socket.on("send",(message)=>{
-    console.log(message)
-    socket.to(message.room).emit("message",message);
+    socket.on("send",(message)=>{
+        console.log(message);
+        socket.to(message.room).emit("message",message);
+    });
 });
 
 connectDB();
 
-app.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
 });
